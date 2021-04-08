@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.views import View
-from .models import Post, Comment
+from .models import Post, Comment, UserProfile
 from .forms import PostForm, CommentForm
 from django.views.generic.edit import UpdateView, DeleteView
 
@@ -68,8 +68,6 @@ class PostDetailView(LoginRequiredMixin, View):
 
     return render(request, 'social/post_detail.html', context)
 
-
-
 class PostEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
   model = Post
   fields = ['body']
@@ -106,5 +104,18 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     post = self.get_object()
     return self.request.user == post.author
 
+class ProfileView(View):
+  def get(self, request, pk, *args, **kwargs):
+    profile = UserProfile.obejcts.get(pk=pk)
+    user = profile.user
+    posts = Post.objects.filter(author=user).order_by('created_on')
+
+    context = {
+      'user': user,
+      'profile': profile,
+      'posts': posts,
+    }
+
+    return render (request, 'social/profile.html', context)
 
 
