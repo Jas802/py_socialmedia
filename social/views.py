@@ -5,6 +5,7 @@ from django.views import View
 from .models import Post, Comment, UserProfile
 from .forms import PostForm, CommentForm
 from django.views.generic.edit import UpdateView, DeleteView
+from django.http import HttpResponseRedirect
 
 class PostListView(LoginRequiredMixin, View):
   def get(self, request, *args, **kwargs):
@@ -32,7 +33,7 @@ class PostListView(LoginRequiredMixin, View):
           'form': form,
       }
 
-      return render(request, 'social/post_list.html', context)
+      return HttpResponseRedirect(request.path)
 
 class PostDetailView(LoginRequiredMixin, View):
   def get(self, request, pk, *args, **kwargs):
@@ -66,7 +67,7 @@ class PostDetailView(LoginRequiredMixin, View):
         'comments': comments,
     }
 
-    return render(request, 'social/post_detail.html', context)
+    return HttpResponseRedirect(request.path)
 
 class PostEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
   model = Post
