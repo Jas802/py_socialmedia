@@ -105,35 +105,36 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     post = self.get_object()
     return self.request.user == post.author
 
+
 class ProfileView(View):
   def get(self, request, pk, *args, **kwargs):
-    profile = UserProfile.objects.get(pk=pk)
-    user = profile.user
-    posts = Post.objects.filter(author=user).order_by('created_on')
-    
-    followers = profile.followers.all()
-    
-    if len(followers) == 0:
-      is_following = False
+      profile = UserProfile.objects.get(pk=pk)
+      user = profile.user
+      posts = Post.objects.filter(author=user).order_by('-created_on')
 
-    for follower in followers:
-      if follower == request.user:
-        is_following = True
-        break
-      else:
-        is_following = False
+      followers = profile.followers.all()
 
-    number_of_followers = len(followers)
+      if len(followers) == 0:
+          is_following = False
 
-    context = {
-      'user': user,
-      'profile': profile,
-      'posts': posts,
-      'number_of_followers': number_of_followers,
-      'is_following': is_following,
-    }
+      for follower in followers:
+          if follower == request.user:
+              is_following = True
+              break
+          else:
+              is_following = False
 
-    return render(request, 'social/profile.html', context)
+      number_of_followers = len(followers)
+
+      context = {
+          'user': user,
+          'profile': profile,
+          'posts': posts,
+          'number_of_followers': number_of_followers,
+          'is_following': is_following,
+      }
+
+      return render(request, 'social/profile.html', context)
 
 class ProfileEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
   model = UserProfile
@@ -156,12 +157,62 @@ class AddFollower(LoginRequiredMixin, View):
     return redirect('profile', pk=profile.pk)
 
 class RemoveFollower(LoginRequiredMixin, View):
-  def post(self, request, pl, *args, **kwargs):
+  def post(self, request, pk, *args, **kwargs):
     profile = UserProfile.objects.get(pk=pk)
     profile.followers.remove(request.user)
 
     return redirect('profile', pk=profile.pk)
 
+class AddLike(LoginRequiredMixin, View):
+  def post(self, request, pk, *args, **kwargs):
+    post = Post.objects.get(pk=pk)
 
+    is_dislike = False
 
+    for dislike is post.dislikes.all():
+      if dislike == request.user:
+        is_dislike = True
+        break
 
+    if is_dislike:
+      post.dislikes.remove(request.user)
+
+    is_like = False
+
+    for like in post.likes.all():
+      if like == request.user:
+        is_like = True
+        break
+
+    if not is_like:
+      post.likes.add(request.user)
+    
+    if is_like:
+      post.likes.remove(request.user)
+
+class Dislike(LoginRequiredMixin, View):
+  def post(self, request, pk, *args, **kwargs):
+    post = Post.objects.get(pk=pk)
+
+    is_like = False
+
+    for like in post.likes.all():
+      if like == request.user:
+        is_like = True
+        break
+
+    if is_like:
+      post.likes.remove(request.user)
+
+    is_dislike = False
+
+    for dislike is post.dislikes.all():
+      if dislike == request.user:
+        is_dislike = True
+        break
+    
+    if not is_dislike:
+      post.dislikes.add(request.user)
+
+    if is_dislike:
+      post.dislikes.remove(request.user)
