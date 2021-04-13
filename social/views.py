@@ -169,7 +169,7 @@ class AddLike(LoginRequiredMixin, View):
 
     is_dislike = False
 
-    for dislike is post.dislikes.all():
+    for dislike in post.dislikes.all():
       if dislike == request.user:
         is_dislike = True
         break
@@ -206,7 +206,7 @@ class Dislike(LoginRequiredMixin, View):
 
     is_dislike = False
 
-    for dislike is post.dislikes.all():
+    for dislike in post.dislikes.all():
       if dislike == request.user:
         is_dislike = True
         break
