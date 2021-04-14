@@ -190,6 +190,9 @@ class AddLike(LoginRequiredMixin, View):
     if is_like:
       post.likes.remove(request.user)
 
+    next = request.POST.get('next', '/')
+    return HttpResponseRedirect(next)
+
 class Dislike(LoginRequiredMixin, View):
   def post(self, request, pk, *args, **kwargs):
     post = Post.objects.get(pk=pk)
@@ -216,3 +219,6 @@ class Dislike(LoginRequiredMixin, View):
 
     if is_dislike:
       post.dislikes.remove(request.user)
+
+    next = request.POST.get('next', '/')
+    return HttpResponseRedirect(next)
