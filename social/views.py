@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.db.models.import Q
+from django.db.models import Q
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.views import View
