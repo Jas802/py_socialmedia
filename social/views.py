@@ -76,7 +76,7 @@ class PostDetailView(LoginRequiredMixin, View):
 class CommentReplyView(LoginRequiredMixin, View):
   def post (self, request, post_pk, pk, *args, **kwargs):
     post = Post.objects.get(pk=post_pk)
-    comment = Comment.obejcts.get(pk=pk)
+    parent_comment = Comment.objects.get(pk=pk)
     form = CommentForm(request.POST)
 
     if form.is_valid:
