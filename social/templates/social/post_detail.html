@@ -1,5 +1,6 @@
 {% extends 'landing/base.html' %}
 {% load crispy_forms_tags %}
+{% load static %}
 
 {% block content %}
 <div class="container">
@@ -91,12 +92,13 @@
                 </button>
               </form>
               <div>
-                <button class="remove-default-btn"><i class="far fa-comment-dots"></i></button>
+                <button class="remove-default-btn"><i class="far fa-comment-dots" onclick="commentReplyToggle
+                  ('{{ comment.pk }}')"></i></button>
               </div>
             </div>
       </div>
     </div>
-    <div class="row justify-content-center mt-3 mb-5">
+    <div class="row justify-content-center mt-3 mb-5 d-none">
       <div class="col-md-5 col-sm-12">
         <form method="POST">
           {% csrf_token %}
@@ -108,5 +110,7 @@
       </div>
     </div>
   {% endfor %}
-</div> 
-{% endblock %}
+</div>
+
+<script type="text/javascript" src="{% static 'js/social.js' %}">
+{% endblock content %}
