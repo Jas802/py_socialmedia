@@ -6,7 +6,7 @@ from django.views import View
 from .models import Post, Comment, UserProfile, Notification
 from .forms import PostForm, CommentForm
 from django.views.generic.edit import UpdateView, DeleteView
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 
 class PostListView(LoginRequiredMixin, View):
   def get(self, request, *args, **kwargs):
@@ -356,3 +356,13 @@ class FollowNotification(View):
     notification.save()
 
     return redirect('profile', pk=profile_pk)
+
+class RemoveNotification(View):
+  def delete(self, request, notification_pk, *arks, **kwargs):
+    notification = Notification.objects.get(pk=notification_pk)
+
+    notification.user_has_seen = True
+    notification.save()
+
+    HttpResponse('Success', content_type='text/plain')
+
